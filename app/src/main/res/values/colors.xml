@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- IDE Dark & Modern Palette -->
+    <color name="ide_bg_dark">#1E1F22</color>
+    <color name="ide_surface_dark">#2B2D30</color>
+    <color name="ide_surface_variant">#393B40</color>
+    <color name="ide_surface_container">#1A1B1E</color>
+    <color name="ide_primary">#7F52FF</color>
+    <color name="ide_primary_variant">#6A3DE8</color>
+    <color name="ide_secondary">#29B6F6</color>
+    <color name="ide_accent">#FF7043</color>
+    <color name="ide_text_primary">#E6E6E6</color>
+    <color name="ide_text_secondary">#9DA0A8</color>
+    <color name="ide_divider">#3C3F41</color>
+    
+    <!-- Status & Diagnostics -->
+    <color name="status_error">#F44336</color>
+    <color name="status_warning">#FFB300</color>
+    <color name="status_info">#42A5F5</color>
+    <color name="status_success">#4CAF50</color>
+    
+    <!-- Tab & Editor Colors -->
+    <color name="tab_active_bg">#2B2D30</color>
+    <color name="tab_inactive_bg">#1E1F22</color>
+    <color name="gutter_bg">#232529</color>
+    <color name="symbol_bar_bg">#25272B</color>
+    <color name="symbol_btn_bg">#34363C</color>
+    <color name="chip_bg">#313438</color>
+    
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

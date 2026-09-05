@@ -1,0 +1,6 @@
+{
+  "name": "CodeAssist Kotlin IDE",
+  "description": "A Kotlin IDE powered by Sora-Editor featuring PSI-backed Kotlin analysis, smart auto-completion, real-time diagnostics, and workspace project management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

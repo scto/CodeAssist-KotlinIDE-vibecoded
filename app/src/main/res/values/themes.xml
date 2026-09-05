@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MyApplication" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/ide_primary</item>
+        <item name="colorPrimaryVariant">@color/ide_primary_variant</item>
+        <item name="colorSecondary">@color/ide_secondary</item>
+        <item name="android:statusBarColor">@color/ide_bg_dark</item>
+        <item name="android:navigationBarColor">@color/ide_bg_dark</item>
+        <item name="android:windowBackground">@color/ide_bg_dark</item>
+        <item name="colorSurface">@color/ide_surface_dark</item>
+        <item name="colorSurfaceVariant">@color/ide_surface_variant</item>
+        <item name="colorOnSurface">@color/ide_text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/ide_text_secondary</item>
+    </style>
+</resources>

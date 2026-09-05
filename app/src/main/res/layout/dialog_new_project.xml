@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ide_surface_dark"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_new_project_title"
+        android:textColor="@color/ide_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Project Name"
+        android:textColor="@color/ide_text_secondary"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/etProjectName"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_rounded_card"
+        android:hint="e.g. MyKotlinApp"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/ide_text_primary"
+        android:textColorHint="@color/ide_text_secondary"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Project Template"
+        android:textColor="@color/ide_text_secondary"
+        android:textSize="12sp" />
+
+    <RadioGroup
+        android:id="@+id/rgProjectTemplates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp">
+
+        <RadioButton
+            android:id="@+id/rbConsoleApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Kotlin Console App (with main function)"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbAndroidApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Android Activity (AppCompat &amp; SDK)"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbAlgorithmsApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Algorithms &amp; Data Structures"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbCoroutinesApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Async &amp; Coroutine Pipelines"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbEmptyApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Blank Kotlin Project"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+    </RadioGroup>
+
+</LinearLayout>

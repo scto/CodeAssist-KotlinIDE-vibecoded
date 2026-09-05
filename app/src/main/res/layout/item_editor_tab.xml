@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp"
+    android:layout_marginEnd="2dp"
+    android:background="@drawable/bg_tab_selected"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="10dp"
+    android:paddingEnd="6dp">
+
+    <ImageView
+        android:id="@+id/ivTabIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_kotlin_file" />
+
+    <TextView
+        android:id="@+id/tvTabTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="Main.kt"
+        android:textColor="@color/ide_text_primary"
+        android:textSize="13sp" />
+
+    <View
+        android:id="@+id/viewModifiedDot"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_badge_warning"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/btnTabClose"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/btn_close"
+        android:padding="3dp"
+        android:src="@drawable/ic_close" />
+
+</LinearLayout>

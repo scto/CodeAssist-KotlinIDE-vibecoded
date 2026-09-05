@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fileItemContainer"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <View
+        android:id="@+id/viewIndent"
+        android:layout_width="0dp"
+        android:layout_height="1dp" />
+
+    <ImageView
+        android:id="@+id/ivExpandArrow"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:contentDescription="Expand"
+        android:src="@drawable/ic_chevron_right"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/ivFileIcon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="File Icon"
+        android:src="@drawable/ic_kotlin_file" />
+
+    <TextView
+        android:id="@+id/tvFileName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Main.kt"
+        android:textColor="@color/ide_text_primary"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:id="@+id/btnFileMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="More Options"
+        android:padding="3dp"
+        android:src="@drawable/ic_more_vert" />
+
+</LinearLayout>

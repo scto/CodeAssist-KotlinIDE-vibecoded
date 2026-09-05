@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/psiItemContainer"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp">
+
+    <TextView
+        android:id="@+id/tvKindBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_symbol_btn"
+        android:paddingStart="6dp"
+        android:paddingTop="1dp"
+        android:paddingEnd="6dp"
+        android:paddingBottom="1dp"
+        android:text="FUN"
+        android:textColor="@color/ide_primary"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvPsiName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="main(args: Array&lt;String&gt;)"
+        android:textColor="@color/ide_text_primary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tvPsiLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ln 3"
+        android:textColor="@color/ide_text_secondary"
+        android:textSize="11sp" />
+
+</LinearLayout>

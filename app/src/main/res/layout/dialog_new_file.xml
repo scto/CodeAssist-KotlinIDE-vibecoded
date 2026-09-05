@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ide_surface_dark"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_new_file_title"
+        android:textColor="@color/ide_text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Name"
+        android:textColor="@color/ide_text_secondary"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/etFileName"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_rounded_card"
+        android:hint="e.g. MyService.kt"
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/ide_text_primary"
+        android:textColorHint="@color/ide_text_secondary"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="File Kind"
+        android:textColor="@color/ide_text_secondary"
+        android:textSize="12sp" />
+
+    <RadioGroup
+        android:id="@+id/rgFileKinds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp">
+
+        <RadioButton
+            android:id="@+id/rbKtFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Kotlin File (.kt)"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbKtClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Class"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbKtDataClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Data Class"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbKtInterface"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Interface"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbKtObject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kotlin Object / Singleton"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+        <RadioButton
+            android:id="@+id/rbDirectory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Folder / Package Directory"
+            android:textColor="@color/ide_text_primary"
+            android:textSize="13sp" />
+
+    </RadioGroup>
+
+</LinearLayout>

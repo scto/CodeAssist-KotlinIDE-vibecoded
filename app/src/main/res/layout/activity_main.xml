@@ -1,0 +1,703 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ide_bg_dark">
+
+    <!-- MAIN EDITOR CONTAINER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- TOP TOOLBAR -->
+        <LinearLayout
+            android:id="@+id/toolbarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/ide_surface_dark"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp">
+
+            <ImageView
+                android:id="@+id/btnOpenDrawer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Open Project Drawer"
+                android:padding="8dp"
+                android:src="@drawable/ic_menu" />
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="2dp"
+                android:contentDescription="Kotlin"
+                android:src="@drawable/ic_kotlin_file" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvProjectTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="MyKotlinProject"
+                    android:textColor="@color/ide_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvActiveFilePath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="middle"
+                    android:maxLines="1"
+                    android:text="src/main/kotlin/Main.kt"
+                    android:textColor="@color/ide_text_secondary"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <!-- Action: Run -->
+            <ImageView
+                android:id="@+id/btnRunCode"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_run"
+                android:padding="8dp"
+                android:src="@drawable/ic_play_arrow" />
+
+            <!-- Action: Save -->
+            <ImageView
+                android:id="@+id/btnSave"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_save"
+                android:padding="9dp"
+                android:src="@drawable/ic_save" />
+
+            <!-- Action: Undo -->
+            <ImageView
+                android:id="@+id/btnUndo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_undo"
+                android:padding="9dp"
+                android:src="@drawable/ic_undo" />
+
+            <!-- Action: Redo -->
+            <ImageView
+                android:id="@+id/btnRedo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_redo"
+                android:padding="9dp"
+                android:src="@drawable/ic_redo" />
+
+            <!-- Action: Find -->
+            <ImageView
+                android:id="@+id/btnSearch"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_search"
+                android:padding="9dp"
+                android:src="@drawable/ic_search" />
+
+            <!-- Diagnostics Badge (Errors / Warnings) -->
+            <LinearLayout
+                android:id="@+id/btnDiagnosticsBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_badge_error"
+                android:gravity="center"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp">
+
+                <ImageView
+                    android:id="@+id/ivDiagIcon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:contentDescription="Problems"
+                    android:src="@drawable/ic_error" />
+
+                <TextView
+                    android:id="@+id/tvDiagCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="0"
+                    android:textColor="@color/status_error"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Action: Settings -->
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_settings"
+                android:padding="9dp"
+                android:src="@drawable/ic_settings" />
+
+        </LinearLayout>
+
+        <!-- SEARCH AND REPLACE BAR (COLLAPSIBLE) -->
+        <LinearLayout
+            android:id="@+id/searchBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ide_surface_variant"
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etSearchQuery"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_card"
+                    android:hint="Find in file..."
+                    android:inputType="text"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/ide_text_primary"
+                    android:textColorHint="@color/ide_text_secondary"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnFindPrev"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="4dp"
+                    android:text="▲"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnFindNext"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="4dp"
+                    android:text="▼"
+                    android:textSize="11sp" />
+
+                <ImageView
+                    android:id="@+id/btnCloseSearch"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Close Find"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_close" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etReplaceQuery"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_rounded_card"
+                    android:hint="Replace with..."
+                    android:inputType="text"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/ide_text_primary"
+                    android:textColorHint="@color/ide_text_secondary"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnReplaceOne"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Replace"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnReplaceAll"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginStart="4dp"
+                    android:text="All"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- TABS BAR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:background="@color/gutter_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvEditorTabs"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <ImageView
+                android:id="@+id/btnQuickNewFile"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/action_new_file"
+                android:padding="7dp"
+                android:src="@drawable/ic_add" />
+
+        </LinearLayout>
+
+        <!-- CODE EDITOR CONTAINER & EMPTY STATE -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <io.github.rosemoe.sora.widget.CodeEditor
+                android:id="@+id/codeEditor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Empty state when no tabs are open -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ide_bg_dark"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:contentDescription="Kotlin IDE"
+                    android:src="@drawable/ic_kotlin_file" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="CodeAssist Kotlin IDE"
+                    android:textColor="@color/ide_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="@string/no_file_open"
+                    android:textColor="@color/ide_text_secondary"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnEmptyOpenProject"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Open Project Explorer" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <!-- QUICK ACCESS SYMBOL BAR (Above Keyboard) -->
+        <LinearLayout
+            android:id="@+id/symbolBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/symbol_bar_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSymbolBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </LinearLayout>
+
+        <!-- STATUS BAR -->
+        <LinearLayout
+            android:id="@+id/statusBarContainer"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@color/ide_surface_container"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/tvCursorPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ln 1, Col 1"
+                android:textColor="@color/ide_text_secondary"
+                android:textSize="11sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/ide_divider" />
+
+            <TextView
+                android:id="@+id/tvEncoding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UTF-8"
+                android:textColor="@color/ide_text_secondary"
+                android:textSize="11sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/ide_divider" />
+
+            <TextView
+                android:id="@+id/tvAnalysisStatusIndicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Kotlin PSI: Ready"
+                android:textColor="@color/status_success"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/btnToggleBottomPanel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:text="Panel ▲"
+                android:textColor="@color/ide_primary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- BOTTOM EXPANDABLE PANEL (PROBLEMS / STRUCTURE / CONSOLE / WORKSPACE) -->
+        <LinearLayout
+            android:id="@+id/bottomPanelContainer"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@color/ide_surface_dark"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Tab Headers for Bottom Panel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/ide_surface_container"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/tabPanelProblems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Problems (0)"
+                    android:textColor="@color/ide_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tabPanelConsole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Console"
+                    android:textColor="@color/ide_text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tabPanelStructure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Structure (PSI)"
+                    android:textColor="@color/ide_text_secondary"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tabPanelWorkspace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Workspace"
+                    android:textColor="@color/ide_text_secondary"
+                    android:textSize="12sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/btnCloseBottomPanel"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Close Panel"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_close" />
+
+            </LinearLayout>
+
+            <!-- Bottom Panel Content Frames -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <!-- 1. Problems List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvDiagnostics"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <!-- 2. Console View -->
+                <ScrollView
+                    android:id="@+id/layoutConsoleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvConsoleOutput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="Console ready. Click Run (▶) to execute Kotlin program."
+                        android:textColor="@color/ide_text_primary"
+                        android:textSize="12sp" />
+
+                </ScrollView>
+
+                <!-- 3. Structure Outline List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvStructureOutline"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="6dp"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <!-- 4. Workspace Details -->
+                <LinearLayout
+                    android:id="@+id/layoutWorkspaceInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvWorkspaceDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Workspace: MyKotlinProject\nSource Dirs: src/main/kotlin\nIndexed Symbols: 12"
+                        android:textColor="@color/ide_text_primary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- NAVIGATION DRAWER (PROJECT EXPLORER) -->
+    <LinearLayout
+        android:id="@+id/navigationDrawer"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/ide_surface_dark"
+        android:orientation="vertical">
+
+        <!-- Drawer Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ide_surface_container"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Workspace"
+                    android:src="@drawable/ic_workspace" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/project_explorer"
+                    android:textColor="@color/ide_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Project Selector Dropdown Button -->
+            <LinearLayout
+                android:id="@+id/btnSelectProject"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_rounded_card"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/tvDrawerProjectName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="MyKotlinProject"
+                    android:textColor="@color/ide_text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="Switch Project"
+                    android:src="@drawable/ic_expand_more" />
+
+            </LinearLayout>
+
+            <!-- Quick Action Bar in Drawer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnDrawerNewProject"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:text="+ Project"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnDrawerNewFile"
+                    style="@style/Widget.Material3.Button.TonalButton"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:text="+ File"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- File Tree List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFileTree"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </LinearLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
