@@ -56,11 +56,6 @@ jobs:
             touch .env
           fi
 
-          # Decode debug keystore if base64 file exists
-          if [ -f "debug.keystore.base64" ]; then
-            base64 -d debug.keystore.base64 > debug.keystore
-          fi
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -81,10 +76,6 @@ jobs:
 
       - name: Build Release APK
         if: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.build_type == 'release' || github.event.inputs.build_type == 'all') }}
-        env:
-          KEYSTORE_PATH: ${{ github.workspace }}/debug.keystore
-          STORE_PASSWORD: android
-          KEY_PASSWORD: android
         run: ./gradlew assembleRelease --stacktrace
 
       - name: Upload Debug APK Artifact
