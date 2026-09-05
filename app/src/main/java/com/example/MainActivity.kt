@@ -122,6 +122,11 @@ class MainActivity : AppCompatActivity() {
         val completionProvider = KotlinCompletionProvider(workspaceManager.workspaceIndex, ktParser)
         editor.setEditorLanguage(KotlinLanguage(completionProvider))
 
+        // Configure Keyboard with Password flag as requested for coding without auto-correct interference
+        editor.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or
+                android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+
         // Selection / Cursor change listener
         editor.subscribeEvent(SelectionChangeEvent::class.java) { _, _ ->
             val cursor = editor.cursor
