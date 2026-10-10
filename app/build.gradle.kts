@@ -1,5 +1,6 @@
 plugins {
   alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.google.devtools.ksp)
   alias(libs.plugins.roborazzi)
   alias(libs.plugins.secrets)
@@ -13,8 +14,8 @@ android {
     applicationId = "com.aistudio.codeassist.ktide"
     minSdk = 26
     targetSdk = 36
-    versionCode = 4
-    versionName = "1.0-diag4"
+    versionCode = 5
+    versionName = "1.0-diag5"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -50,7 +51,7 @@ android {
   }
   buildFeatures {
     viewBinding = true
-    compose = false
+    compose = true
     buildConfig = true
   }
   testOptions { unitTests { isIncludeAndroidResources = true } }
@@ -78,5 +79,13 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
+
+  // Compose nur für den Start-Bildschirm (PermissionActivity); MainActivity bleibt View-basiert.
+  implementation(platform(libs.androidx.compose.bom))
+  implementation(libs.androidx.compose.ui)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.activity.compose)
+  implementation(libs.androidx.lifecycle.runtime.compose)
+  implementation(libs.accompanist.permissions)
   testImplementation(libs.junit)
 }

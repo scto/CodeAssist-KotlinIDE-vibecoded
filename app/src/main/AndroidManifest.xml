@@ -31,9 +31,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
-        <!-- Launcher-Einstieg: fragt Speicherzugriff für die Logs ab, bevor MainActivity startet -->
+        <!-- Launcher-Einstieg (Compose + Accompanist): Speicherzugriff als Allererstes -->
         <activity
-            android:name=".diagnostics.StartupActivity"
+            android:name=".diagnostics.PermissionActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.CodeAssist.Crash">
@@ -43,6 +43,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Fallback ohne Compose, falls PermissionActivity nicht startet -->
+        <activity
+            android:name=".diagnostics.StartupActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.CodeAssist.Crash" />
 
         <activity
             android:name=".MainActivity"
