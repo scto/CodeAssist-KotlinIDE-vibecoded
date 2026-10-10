@@ -2,61 +2,54 @@ package com.example.diagnostics
 
 import android.content.Context
 import android.content.Intent
-import android.os.Process
 import android.util.Log
-import java.util.concurrent.atomic.AtomicBoolean
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.system.exitProcess
 
-/**
- * Fängt jede unbehandelte Exception (alle Threads), schreibt Log + Report und
- * zeigt die [CrashActivity] (eigener Prozess ":crash") an.
- *
- * Nicht abgedeckt: native Abstürze (SIGSEGV) – siehe [ExitInfoLogger].
- */
-class CrashHandler private constructor(
-    private val app: Context,
-    private val previous: Thread.UncaughtExceptionHandler?
-) : Thread.UncaughtExceptionHandler {
+object CrashHandler : Thread.UncaughtExceptionHandler {
+    private var defaultHandler: Thread.UncaughtExceptionHandler? = null
+    private var applicationContext: Context? = null
 
-    override fun uncaughtException(thread: Thread, throwable: Throwable) {
-        if (!handling.compareAndSet(false, true)) {
-            // Folgefehler während der Behandlung → nicht endlos rekursieren
-            previous?.uncaughtException(thread, throwable)
-            return
-        }
-        var reported = false
-        try {
-            AppLogger.f(TAG, "UNBEHANDELTE EXCEPTION in Thread '${thread.name}'", throwable)
-            val report = CrashReport.build(app, thread, throwable)
-            val file = CrashReport.save(app, report)
-            AppLogger.i(TAG, "Crash-Report gespeichert: ${file.absolutePath}")
-            AppLogger.flushBlocking()
-            val intent = Intent(app, CrashActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                putExtra(CrashActivity.EXTRA_REPORT_FILE, file.absolutePath)
-            }
-            app.startActivity(intent)
-            reported = true
-        } catch (t: Throwable) {
-            try { Log.e(TAG, "Crash-Behandlung selbst fehlgeschlagen", t) } catch (_: Throwable) { }
-        }
-
-        if (!reported) {
-            previous?.uncaughtException(thread, throwable)
-        }
-        Process.killProcess(Process.myPid())
-        exitProcess(10)
+    fun install(context: Context) {
+        applicationContext = context.applicationContext
+        defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
-    companion object {
-        private const val TAG = "CrashHandler"
-        private val handling = AtomicBoolean(false)
+    override fun uncaughtException(thread: Thread, throwable: Throwable) {
+        try {
+            val sw = StringWriter()
+            val pw = PrintWriter(sw)
+            throwable.printStackTrace(pw)
+            val stackTrace = sw.toString()
 
-        fun install(context: Context) {
-            val current = Thread.getDefaultUncaughtExceptionHandler()
-            if (current is CrashHandler) return
-            Thread.setDefaultUncaughtExceptionHandler(CrashHandler(context.applicationContext ?: context, current))
-            AppLogger.i(TAG, "CrashHandler installiert (vorheriger Handler: ${current?.javaClass?.name})")
+            // 1. Immer sicher in Logcat schreiben (schlägt nie fehl)
+            Log.e("CrashHandler", "FATAL UNCAUGHT EXCEPTION:\n$stackTrace")
+
+            // 2. Isolierter Block für den Dateizugriff -> Verhindert Double Fault
+            try {
+                StorageAccess.saveCrashLog(stackTrace)
+            } catch (e: Exception) {
+                Log.e("CrashHandler", "Fehler beim Speichern des Crash-Logs. Rechte fehlen?", e)
+            }
+
+            // 3. Fehler-Bildschirm (CrashActivity) starten
+            applicationContext?.let { ctx ->
+                val intent = Intent(ctx, CrashActivity::class.java).apply {
+                    putExtra("CRASH_LOG", stackTrace)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+                ctx.startActivity(intent)
+            }
+
+        } catch (e: Exception) {
+            // Letzte Rettungsschicht, falls der Handler selbst abstürzt
+            Log.e("CrashHandler", "Kritischer Fehler INNERHALB des CrashHandlers!", e)
+        } finally {
+            // Den Prozess nach der Verarbeitung sauber durch das System killen lassen
+            defaultHandler?.uncaughtException(thread, throwable)
+            exitProcess(1)
         }
     }
 }

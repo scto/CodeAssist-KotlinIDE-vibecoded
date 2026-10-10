@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example"> 
 
-    <!-- Logs nach /storage/emulated/0/CodeAssistLSP (Fallback: Android/data/<pkg>/files/CodeAssistLSP) -->
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <!-- Berechtigungen für Android 10 und älter -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
+    <!-- All Files Access für Android 11+ -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
     <application
         android:name=".CodeAssistApp"
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,35 +19,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication">
-        <!-- Launcher-Einstieg: fragt Speicherzugriff für die Logs ab, bevor MainActivity startet -->
+        android:theme="@style/Theme.CodeAssist"
+        android:requestLegacyExternalStorage="true">
+
+        <!-- StartupActivity als Einsprungspunkt (Launcher) -->
         <activity
             android:name=".diagnostics.StartupActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.CodeAssist.Crash">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MyApplication" />
+            android:exported="false" />
 
-        <!-- Crash-Anzeige in eigenem Prozess, unabhängig vom (abgestürzten) Haupt-Prozess -->
+        <!-- Eigener Prozess für den Crash-Screen, um Endlosschleifen zu vermeiden -->
         <activity
             android:name=".diagnostics.CrashActivity"
             android:exported="false"
-            android:process=":crash"
-            android:label="CodeAssist Crash"
-            android:launchMode="singleTask"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.CodeAssist.Crash" />
-    </application>
+            android:process=":error_handler" />
 
+    </application>
 </manifest>
