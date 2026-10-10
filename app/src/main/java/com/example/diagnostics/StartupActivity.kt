@@ -71,7 +71,9 @@ class StartupActivity : Activity() {
                 text = "Logs und Crash-Reports werden in den Ordner „${AppLogger.DIR_NAME}“ geschrieben.\n\n" +
                     "Für /storage/emulated/0/${AppLogger.DIR_NAME} wird „Zugriff auf alle Dateien“ benötigt.\n\n" +
                     "Ohne Zugriff landen die Logs hier (auf Android 11+ mit normalen Datei-Apps meist nicht erreichbar):\n" +
-                    "${AppLogger.logDir?.absolutePath}"
+                    "${AppLogger.logDir?.absolutePath}\n\n" +
+                    "Eine Kopie liegt immer (ohne Berechtigung) in:\n" +
+                    "${AppLogger.mirrorDescription ?: "/storage/emulated/0/Download/${AppLogger.DIR_NAME}/ (nicht verfügbar)"}"
                 setTextColor(Color.parseColor("#E6E6E6"))
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                 setPadding(0, pad, 0, pad)

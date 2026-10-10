@@ -2,14 +2,17 @@ package com.example.diagnostics
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.ContentValues
 import android.os.Build
 import android.os.Environment
 import android.os.Process
 import android.os.SystemClock
+import android.provider.MediaStore
 import android.util.Log
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.text.SimpleDateFormat
 import java.util.ArrayDeque
@@ -49,6 +52,11 @@ object AppLogger {
     @Volatile private var processLabel: String = "main"
     @Volatile private var writer: BufferedWriter? = null
     @Volatile private var bytesWritten = 0L
+    @Volatile private var mirror: OutputStream? = null
+
+    /** Anzeige-Pfad der Kopie in Download/CodeAssistLSP (ohne Berechtigung, ab Android 10). */
+    @Volatile var mirrorDescription: String? = null
+        private set
 
     @Volatile var logDir: File? = null
         private set
@@ -104,6 +112,51 @@ object AppLogger {
             Log.e(TAG, "Log-Datei konnte nicht geöffnet werden: ${file.absolutePath}", t)
             null
         }
+        openMirror(ctx, file.name, dir)
+    }
+
+    /**
+     * Zusätzliche Kopie in /storage/emulated/0/Download/CodeAssistLSP/ via MediaStore.
+     * Braucht KEINE Berechtigung (Android 10+) und ist in jeder Datei-App sichtbar –
+     * auch wenn Android/data gesperrt ist und der Speicherzugriff nie erteilt wurde.
+     */
+    private fun openMirror(ctx: Context, fileName: String, primaryDir: File) {
+        mirror = null
+        mirrorDescription = null
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
+        if (primaryDir == File(Environment.getExternalStorageDirectory(), DIR_NAME)) return
+        try {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/$DIR_NAME")
+            }
+            val uri = ctx.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+            if (uri != null) {
+                mirror = ctx.contentResolver.openOutputStream(uri, "wa")
+                mirrorDescription = "/storage/emulated/0/Download/$DIR_NAME/$fileName"
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Download-Kopie nicht möglich: ${t.javaClass.simpleName}: ${t.message}")
+        }
+    }
+
+    /** Schreibt eine komplette Textdatei (z. B. Crash-Report) nach Download/CodeAssistLSP. */
+    fun writeToDownloads(ctx: Context, fileName: String, text: String): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null
+        return try {
+            val values = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, "Download/$DIR_NAME")
+            }
+            val uri = ctx.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values) ?: return null
+            ctx.contentResolver.openOutputStream(uri, "w")?.use { it.write(text.toByteArray(Charsets.UTF_8)) }
+            "/storage/emulated/0/Download/$DIR_NAME/$fileName"
+        } catch (t: Throwable) {
+            Log.w(TAG, "Download-Datei nicht möglich: ${t.javaClass.simpleName}: ${t.message}")
+            null
+        }
     }
 
     private fun resolveLogDir(ctx: Context): Pair<File, String> {
@@ -143,6 +196,7 @@ object AppLogger {
         i(TAG, "Prozess: $process (pid=${Process.myPid()})")
         i(TAG, "Log-Ordner: ${logDir?.absolutePath}  [$storageDescription]")
         i(TAG, "Log-Datei:  ${sessionFile?.absolutePath}")
+        i(TAG, "Kopie (ohne Berechtigung sichtbar): ${mirrorDescription ?: "nicht verfügbar"}")
         i(TAG, "App: ${ctx.packageName} v${pkg?.versionName} (${pkg?.longVersionCodeCompat()})")
         i(TAG, "Gerät: ${Build.MANUFACTURER} ${Build.MODEL} (${Build.DEVICE}), Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
         i(TAG, "ABIs: ${Build.SUPPORTED_ABIS.joinToString()}")
@@ -211,7 +265,7 @@ object AppLogger {
     /** Wartet (max. [timeoutMs]) bis alle bisherigen Zeilen auf Platte stehen. */
     fun flushBlocking(timeoutMs: Long = 1500) {
         try {
-            executor.submit(Callable { writer?.flush() }).get(timeoutMs, TimeUnit.MILLISECONDS)
+            executor.submit(Callable { writer?.flush(); mirror?.flush() }).get(timeoutMs, TimeUnit.MILLISECONDS)
         } catch (_: Throwable) { /* Timeout ist okay */ }
     }
 
@@ -232,6 +286,12 @@ object AppLogger {
     // ------------------------------------------------------------------ intern
 
     private fun writeLine(line: String) {
+        try {
+            mirror?.let { it.write((line + "\n").toByteArray(Charsets.UTF_8)); it.flush() }
+        } catch (t: Throwable) {
+            Log.w(TAG, "Schreiben der Download-Kopie fehlgeschlagen: ${t.message}")
+            mirror = null
+        }
         val w = writer ?: return
         try {
             if (bytesWritten > MAX_FILE_BYTES) return
@@ -249,8 +309,14 @@ object AppLogger {
     }
 
     private fun closeWriter() {
-        try { executor.submit { writer?.flush(); writer?.close() }.get(1, TimeUnit.SECONDS) } catch (_: Throwable) { }
+        try {
+            executor.submit {
+                writer?.flush(); writer?.close()
+                mirror?.flush(); mirror?.close()
+            }.get(1, TimeUnit.SECONDS)
+        } catch (_: Throwable) { }
         writer = null
+        mirror = null
     }
 
     private fun pruneOldFiles() {

@@ -76,6 +76,8 @@ object CrashReport {
         } catch (t: Throwable) {
             Log.e("CrashReport", "Externe Kopie fehlgeschlagen", t)
         }
+        val shown = AppLogger.writeToDownloads(context, "crash_$stamp.txt", report)
+        if (shown != null) Log.i("CrashReport", "Crash-Report auch in $shown")
         return internal
     }
 
@@ -115,6 +117,7 @@ object CrashReport {
             append(AppLogger.memorySummary(ctx)).append('\n')
             append("Log-Ordner: ${AppLogger.logDir?.absolutePath} [${AppLogger.storageDescription}]\n")
             append("Session:    ${AppLogger.sessionFile?.absolutePath}\n")
+            append("Kopie:      ${AppLogger.mirrorDescription ?: "-"}\n")
             append("Speicherzugriff: ${StorageAccess.hasPublicStorageAccess(ctx)}\n")
         }
     }
