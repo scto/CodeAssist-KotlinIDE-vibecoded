@@ -19,17 +19,26 @@ class CodeAssistApp : Application() {
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        val process = currentProcessName(base)
-        AppLogger.init(base, process)
-        // Im Crash-Prozess keinen eigenen Handler: ein Fehler dort darf keine Schleife erzeugen.
-        if (!process.endsWith(":crash")) CrashHandler.install(base)
+        try {
+            val process = currentProcessName(base)
+            AppLogger.init(base, process)
+            // Im Crash-Prozess keinen eigenen Handler: ein Fehler dort darf keine Schleife erzeugen.
+            if (!process.endsWith(":crash")) CrashHandler.install(base)
+        } catch (t: Throwable) {
+            // Diagnose darf die App niemals selbst zum Absturz bringen.
+            android.util.Log.e(TAG, "Diagnose-Initialisierung fehlgeschlagen", t)
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
-        AppLogger.i(TAG, "Application.onCreate")
-        if (!currentProcessName(this).endsWith(":crash")) {
-            ExitInfoLogger.logRecent(this)
+        try {
+            AppLogger.i(TAG, "Application.onCreate")
+            if (!currentProcessName(this).endsWith(":crash")) {
+                ExitInfoLogger.logRecent(this)
+            }
+        } catch (t: Throwable) {
+            android.util.Log.e(TAG, "Application.onCreate-Diagnose fehlgeschlagen", t)
         }
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             private fun n(a: Activity) = a.javaClass.simpleName

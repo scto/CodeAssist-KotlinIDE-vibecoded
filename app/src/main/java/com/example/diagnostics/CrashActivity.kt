@@ -40,13 +40,28 @@ class CrashActivity : Activity() {
         super.onCreate(savedInstanceState)
         AppLogger.i(TAG, "CrashActivity gestartet")
         report = loadReport()
-        sections = CrashReport.sections(report)
-        setContentView(buildUi())
-        show(Tab.OVERVIEW)
+        try {
+            sections = CrashReport.sections(report)
+            setContentView(buildUi())
+            show(Tab.OVERVIEW)
+        } catch (t: Throwable) {
+            // Notanzeige: reiner Text, damit der Report auf jeden Fall sichtbar ist
+            AppLogger.e(TAG, "Crash-UI konnte nicht aufgebaut werden", t)
+            val tv = TextView(this).apply {
+                text = "CrashActivity-UI fehlgeschlagen: $t\n\n$report"
+                typeface = Typeface.MONOSPACE
+                setTextIsSelectable(true)
+                setTextColor(Color.WHITE)
+                setPadding(24, 48, 24, 24)
+            }
+            setContentView(ScrollView(this).apply { setBackgroundColor(Color.BLACK); addView(tv) })
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        if (!::storageButton.isInitialized) return
+        AppLogger.refreshStorage()
         storageButton.visibility =
             if (StorageAccess.hasPublicStorageAccess(this)) android.view.View.GONE else android.view.View.VISIBLE
     }

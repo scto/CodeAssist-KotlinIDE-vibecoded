@@ -21,17 +21,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
+        <!-- Launcher-Einstieg: fragt Speicherzugriff für die Logs ab, bevor MainActivity startet -->
         <activity
-            android:name=".MainActivity"
+            android:name=".diagnostics.StartupActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MyApplication">
+            android:theme="@style/Theme.CodeAssist.Crash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MyApplication" />
 
         <!-- Crash-Anzeige in eigenem Prozess, unabhängig vom (abgestürzten) Haupt-Prozess -->
         <activity

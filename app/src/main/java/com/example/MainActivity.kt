@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         AppLogger.step(TAG, "initDrawerActions") { initDrawerActions() }
         AppLogger.step(TAG, "refreshAll") { refreshAll() }
 
-        askForStorageAccessOnce()
     }
 
     override fun onResume() {
@@ -111,28 +110,6 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == StorageAccess.REQUEST_CODE) AppLogger.refreshStorage()
-    }
-
-    /** Einmalige Erklärung, warum Zugriff auf /sdcard/CodeAssistLSP gebraucht wird. */
-    private fun askForStorageAccessOnce() {
-        try {
-            if (StorageAccess.hasPublicStorageAccess(this)) return
-            val prefs = getSharedPreferences("diagnostics", MODE_PRIVATE)
-            if (prefs.getBoolean("storage_prompt_shown", false)) return
-            prefs.edit().putBoolean("storage_prompt_shown", true).apply()
-            AlertDialog.Builder(this)
-                .setTitle("Log-Dateien")
-                .setMessage(
-                    "Logs und Crash-Reports werden in den Ordner „${AppLogger.DIR_NAME}“ geschrieben.\n\n" +
-                        "Aktuell: ${AppLogger.logDir?.absolutePath}\n\n" +
-                        "Für /storage/emulated/0/${AppLogger.DIR_NAME} wird der Zugriff auf alle Dateien benötigt."
-                )
-                .setPositiveButton("Zugriff erteilen") { _, _ -> StorageAccess.request(this) }
-                .setNegativeButton("Später", null)
-                .show()
-        } catch (t: Throwable) {
-            AppLogger.w(TAG, "Speicher-Hinweis nicht möglich", t)
-        }
     }
 
     private fun initWorkspace() {
