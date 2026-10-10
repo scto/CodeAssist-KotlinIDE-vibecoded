@@ -6,6 +6,8 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
+import android.util.Log
 
 import com.example.diagnostics.AppLogger
 import com.example.diagnostics.CrashHandler
@@ -19,7 +21,13 @@ import java.io.File
  */
 class CodeAssistApp : Application() {
 
+    init {
+        // Roh-Log ganz ohne AppLogger: erscheint, sobald die Klasse geladen und instanziiert ist.
+        Log.i(BOOT, "CodeAssistApp.<init> pid=${Process.myPid()}")
+    }
+
     override fun attachBaseContext(base: Context) {
+        Log.i(BOOT, "attachBaseContext: start")
         super.attachBaseContext(base)
         try {
             val process = currentProcessName(base)
@@ -28,11 +36,13 @@ class CodeAssistApp : Application() {
             if (!process.endsWith(":crash")) CrashHandler.install(base)
         } catch (t: Throwable) {
             // Diagnose darf die App niemals selbst zum Absturz bringen.
-            android.util.Log.e(TAG, "Diagnose-Initialisierung fehlgeschlagen", t)
+            Log.e(BOOT, "Diagnose-Initialisierung fehlgeschlagen", t)
         }
+        Log.i(BOOT, "attachBaseContext: ende (Logger=${AppLogger.sessionFile?.absolutePath})")
     }
 
     override fun onCreate() {
+        Log.i(BOOT, "Application.onCreate: start")
         super.onCreate()
         try {
             AppLogger.i(TAG, "Application.onCreate")
@@ -40,7 +50,7 @@ class CodeAssistApp : Application() {
                 ExitInfoLogger.logRecent(this)
             }
         } catch (t: Throwable) {
-            android.util.Log.e(TAG, "Application.onCreate-Diagnose fehlgeschlagen", t)
+            Log.e(BOOT, "Application.onCreate-Diagnose fehlgeschlagen", t)
         }
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             private fun n(a: Activity) = a.javaClass.simpleName
@@ -80,5 +90,6 @@ class CodeAssistApp : Application() {
 
     private companion object {
         const val TAG = "CodeAssistApp"
+        const val BOOT = "CA/Boot"
     }
 }

@@ -37,6 +37,7 @@ class CrashActivity : Activity() {
     private lateinit var storageButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.i("CA/Boot", "CrashActivity.onCreate: start")
         super.onCreate(savedInstanceState)
         AppLogger.i(TAG, "CrashActivity gestartet")
         report = loadReport()

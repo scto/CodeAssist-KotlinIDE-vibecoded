@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.i("CA/Boot", "MainActivity.onCreate: start")
         super.onCreate(savedInstanceState)
         AppLogger.step(TAG, "inflate activity_main") {
             binding = ActivityMainBinding.inflate(layoutInflater)

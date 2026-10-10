@@ -19,6 +19,8 @@ class CrashHandler private constructor(
 ) : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
+        // Roh-Log zuerst, unabhängig von Logger/Dateizugriff
+        try { Log.e("CA/Boot", "UNCAUGHT in '${thread.name}'", throwable) } catch (_: Throwable) { }
         if (!handling.compareAndSet(false, true)) {
             // Folgefehler während der Behandlung → nicht endlos rekursieren
             previous?.uncaughtException(thread, throwable)

@@ -38,6 +38,8 @@ object AppLogger {
 
     const val DIR_NAME = "CodeAssistLSP"
     private const val TAG = "AppLogger"
+    /** Alle Logcat-Tags beginnen mit "CA/" -> `adb logcat -s` bzw. `grep "CA/"` findet alles. */
+    const val LOGCAT_PREFIX = "CA/"
     private const val RING_SIZE = 400
     private const val MAX_FILE_BYTES = 5L * 1024 * 1024
     private const val KEEP_SESSION_FILES = 20
@@ -234,8 +236,8 @@ object AppLogger {
 
     fun log(level: Level, tag: String, msg: String, t: Throwable?) {
         try {
-            if (t == null) Log.println(level.priority, tag, msg)
-            else Log.println(level.priority, tag, msg + "\n" + Log.getStackTraceString(t))
+            if (t == null) Log.println(level.priority, LOGCAT_PREFIX + tag, msg)
+            else Log.println(level.priority, LOGCAT_PREFIX + tag, msg + "\n" + Log.getStackTraceString(t))
         } catch (_: Throwable) { /* Logcat darf nie crashen */ }
 
         val sb = StringBuilder(msg.length + 64)

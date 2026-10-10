@@ -22,6 +22,7 @@ class StartupActivity : Activity() {
     private var skipped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.i("CA/Boot", "StartupActivity.onCreate: start")
         super.onCreate(savedInstanceState)
         AppLogger.i(TAG, "StartupActivity.onCreate, Speicherzugriff=${StorageAccess.hasPublicStorageAccess(this)}")
         if (StorageAccess.hasPublicStorageAccess(this) || SKIPPED_THIS_PROCESS) {
