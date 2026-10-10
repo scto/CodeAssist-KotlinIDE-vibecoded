@@ -12,4 +12,11 @@
         <item name="colorOnSurface">@color/ide_text_primary</item>
         <item name="colorOnSurfaceVariant">@color/ide_text_secondary</item>
     </style>
+
+    <!-- Bewusst nur Framework-Theme: Crash-Screen darf nicht von AppCompat/Material abhängen -->
+    <style name="Theme.CodeAssist.Crash" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/ide_bg_dark</item>
+        <item name="android:statusBarColor">@color/ide_bg_dark</item>
+        <item name="android:navigationBarColor">@color/ide_bg_dark</item>
+    </style>
 </resources>

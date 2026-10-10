@@ -44,7 +44,7 @@ class KotlinCompletionProvider(
         }
         charOffset += safeCol
 
-        val request = CompletionRequest.create("ActiveFile.kt", entireSource, charOffset)
+        val request = CompletionRequest.create(entireSource, charOffset, "ActiveFile.kt")
         val result: CompletionResult = facade.complete(request)
         val soraItems: List<SoraCompletionItem> = soraAdapter.adapt(result)
 

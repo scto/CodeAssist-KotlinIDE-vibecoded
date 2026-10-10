@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.databinding.ActivityMainBinding
+import com.example.diagnostics.AppLogger
+import com.example.diagnostics.StorageAccess
 import com.example.databinding.DialogNewFileBinding
 import com.example.databinding.DialogNewProjectBinding
 import com.example.databinding.DialogWorkspaceSettingsBinding
@@ -66,6 +68,10 @@ class MainActivity : AppCompatActivity() {
 
     private var selectedBottomTab = BottomTab.PROBLEMS
 
+    private companion object {
+        const val TAG = "MainActivity"
+    }
+
     enum class BottomTab {
         PROBLEMS,
         CONSOLE,
@@ -75,18 +81,58 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        AppLogger.step(TAG, "inflate activity_main") {
+            binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+        }
 
-        initWorkspace()
-        initCodeEditor()
-        initAdapters()
-        initToolbarActions()
-        initBottomPanel()
-        initSearchAndReplace()
-        initDrawerActions()
+        AppLogger.step(TAG, "initWorkspace") { initWorkspace() }
+        AppLogger.step(TAG, "initCodeEditor") { initCodeEditor() }
+        AppLogger.step(TAG, "initAdapters") { initAdapters() }
+        AppLogger.step(TAG, "initToolbarActions") { initToolbarActions() }
+        AppLogger.step(TAG, "initBottomPanel") { initBottomPanel() }
+        AppLogger.step(TAG, "initSearchAndReplace") { initSearchAndReplace() }
+        AppLogger.step(TAG, "initDrawerActions") { initDrawerActions() }
+        AppLogger.step(TAG, "refreshAll") { refreshAll() }
 
-        refreshAll()
+        askForStorageAccessOnce()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Falls der Speicherzugriff gerade in den Einstellungen erteilt wurde: Log-Ordner umschalten.
+        AppLogger.refreshStorage()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == StorageAccess.REQUEST_CODE) AppLogger.refreshStorage()
+    }
+
+    /** Einmalige Erklärung, warum Zugriff auf /sdcard/CodeAssistLSP gebraucht wird. */
+    private fun askForStorageAccessOnce() {
+        try {
+            if (StorageAccess.hasPublicStorageAccess(this)) return
+            val prefs = getSharedPreferences("diagnostics", MODE_PRIVATE)
+            if (prefs.getBoolean("storage_prompt_shown", false)) return
+            prefs.edit().putBoolean("storage_prompt_shown", true).apply()
+            AlertDialog.Builder(this)
+                .setTitle("Log-Dateien")
+                .setMessage(
+                    "Logs und Crash-Reports werden in den Ordner „${AppLogger.DIR_NAME}“ geschrieben.\n\n" +
+                        "Aktuell: ${AppLogger.logDir?.absolutePath}\n\n" +
+                        "Für /storage/emulated/0/${AppLogger.DIR_NAME} wird der Zugriff auf alle Dateien benötigt."
+                )
+                .setPositiveButton("Zugriff erteilen") { _, _ -> StorageAccess.request(this) }
+                .setNegativeButton("Später", null)
+                .show()
+        } catch (t: Throwable) {
+            AppLogger.w(TAG, "Speicher-Hinweis nicht möglich", t)
+        }
     }
 
     private fun initWorkspace() {
