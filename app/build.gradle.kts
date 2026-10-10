@@ -13,8 +13,8 @@ android {
     applicationId = "com.aistudio.codeassist.ktide"
     minSdk = 26
     targetSdk = 36
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = 3
+    versionName = "1.0-diag3"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

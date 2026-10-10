@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
+
 import com.example.databinding.ActivityMainBinding
 import com.example.diagnostics.AppLogger
 import com.example.diagnostics.StorageAccess
@@ -39,9 +40,11 @@ import com.example.ide.ui.adapter.FileTreeAdapter
 import com.example.ide.ui.adapter.PsiOutlineAdapter
 import com.example.ide.ui.adapter.SymbolBarAdapter
 import com.example.ide.workspace.WorkspaceManager
+
 import io.github.rosemoe.sora.event.ContentChangeEvent
 import io.github.rosemoe.sora.event.SelectionChangeEvent
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme
+
 import kotlinx.coroutines.launch
 import java.io.File
 

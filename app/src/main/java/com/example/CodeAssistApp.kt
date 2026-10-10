@@ -6,9 +6,11 @@ import android.content.ComponentCallbacks2
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+
 import com.example.diagnostics.AppLogger
 import com.example.diagnostics.CrashHandler
 import com.example.diagnostics.ExitInfoLogger
+
 import java.io.File
 
 /**
